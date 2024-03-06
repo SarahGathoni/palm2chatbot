@@ -1,22 +1,50 @@
 import './App.css';
 import  { useState } from 'react';
 
+// Chat component
+
 const ChatComponent = () => {
   const [inputValue, setInputValue] = useState('');
-  
+  const [chatHistory, setChatHistory] = useState([]);
   const [response, setResponse] = useState('');
 
+  //handle empty input
+  if(!inputValue){
+    console.log('Input is empty');
+  }
+
+  //handle input change
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
     
   };
 
-  const handleSubmit = () => {
-    // Handle submission logic here
-    console.log('Submitted:', inputValue);
-    // For demonstration purposes, just echoing the input as a response
-    setResponse(inputValue);
-    setInputValue(''); // Clear input after submission
+  const handleSubmit = async() => {
+    try {
+      const options ={
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          history: chatHistory,
+          message: inputValue,
+        }),
+      };
+      const response = await fetch('http://localhost:3000/chat', options);
+      const data = await response.text();
+      setResponse(data.response);
+
+      if (response.ok) {
+        setChatHistory([...chatHistory, { user: 'user', message: inputValue },
+         // what the bot returns
+        { user: 'bot', message: data.response }]);
+        setInputValue('');
+      }
+      
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -27,7 +55,10 @@ const ChatComponent = () => {
       <div className="response-container mt-4">
         {response && (
           <div className="bg-gray-100 p-4 rounded-md" style={{ width: 'calc(100% - 60px)' }}>
-            <p className="text-gray-800">{response}</p>
+            {chatHistory.map((chatItem, _index) => <div key={_index}>
+              <p className="text-gray-800">{chatItem.role} : {chatItem.parts}</p>
+            </div>)}
+            
             
           </div>
           

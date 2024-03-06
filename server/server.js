@@ -1,36 +1,48 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
-const dotenv = require("dotenv");
+const express = require('express');
+const app = express();
+const dotenv = require('dotenv');
 dotenv.config();
+const cors = require('cors');
 
-// Access your API key as an environment variable (see "Set up your API key" above)
-const genAI = new GoogleGenerativeAI(process.env.API_KEY);
+// Middleware
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
-async function run() {
-  // For text-only input, use the gemini-pro model
-  const model = genAI.getGenerativeModel({ model: "gemini-pro"});
+const PORT = 3000;
+// Initialize Google Generative AI with API key from environment variable
+const genAI = new GoogleGenerativeAI(process.env.API_KEY)
 
-  const chat = model.startChat({
-    history: [
-      {
-        role: "user",
-        parts: "Hello, I have 2 dogs in my house.",
-      },
-      {
-        role: "model",
-        parts: "Great to meet you. What would you like to know?",
-      },
-    ],
-    generationConfig: {
-      maxOutputTokens: 100,
-    },
-  });
+// POST /chat endpoint
+app.post('/chat', async (req, res) => {
+  try {
+    // Extract history and message from request body
+    const { history, message } = req.body;
+    
+    // Define the model
+    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    
+    // Start a chat session
+    const chat = model.startChat(history);
+    
+    // Send a message to the chat session
+    const result = await chat.sendMessage(message);
+    const response = result.response.text;
+    
+    // Log the response
+    console.log(result);
+    
+    // Send the response text to the client
+    res.send(response);
+  } catch (error) {
+    // Handle errors
+    console.error(error);
+    res.status(500).send("Internal Server Error")
+  }
+});
 
-  const msg = "How many paws are in my house?";
-
-  const result = await chat.sendMessage(msg);
-  const response = await result.response;
-  const text = response.text();
-  console.log(text);
-}
-
-run();
+// Start the server
+app.listen(PORT, () => {
+  console.log(`Server listening on ${PORT}`);
+});
