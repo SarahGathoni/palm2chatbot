@@ -50,11 +50,11 @@ const ChatComponent = () => {
   return (
     <>
     <div className='ml-0 fixed top-20 left-0'>
-      <button className="  py-2 px-4 border border-none w-[200px] h-[50px]" onClick={handleSaveChat}>
+      <button className="  py-2 px-4 border border-none w-[200px] h-[50px] bg-clip-text w-40 sm:w-auto" onClick={handleSaveChat}>
       <span className="bg-gradient-to-r from-blue-500 to-purple-500 text-transparent bg-clip-text">Save Chat</span>
       </button>
     </div>
-    <div className="chat-container mt-2 w-[800px] h-[500px] border border-solid max-w-screen-lg mx-auto">
+    <div className="chat-container mt-2 w-[800px] h-[500px] border border-solid mt-2 max-w-screen-lg mx-auto px-4">
      {!response &&(
       <h2 className="text-center text-4xl font-semibold mb-10  top-20 left-0 right-0 font-sans">How can I help you Today?</h2>
      )} 
