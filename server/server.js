@@ -14,11 +14,15 @@ const PORT = 3000;
 // Initialize Google Generative AI with API key from environment variable
 const genAI = new GoogleGenerativeAI(process.env.API_KEY)
 
+
+
+
 // POST /chat endpoint
 app.post('/chat', async (req, res) => {
   try {
     // Extract history and message from request body
     const { history, message } = req.body;
+    console.log(history, message);
     
     // Define the model
     const model = genAI.getGenerativeModel({ model: "gemini-pro" });
@@ -27,8 +31,8 @@ app.post('/chat', async (req, res) => {
     const chat = model.startChat(history);
     
     // Send a message to the chat session
-    const result = await chat.sendMessage(message);
-    const response = result.response.text;
+    const result = await chat.sendMessage(message)
+    const response = result.response;
     
     // Log the response
     console.log(result);
