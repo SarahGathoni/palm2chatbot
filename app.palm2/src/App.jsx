@@ -29,7 +29,7 @@ const ChatComponent = () => {
       const responseData = await response.json();
       const generatedText = responseData.candidates[0].content.parts[0].text;
       
-      // Append the new message to the chat history
+      // Update the chat history with the new message
       setChatHistory(prevChatHistory => [
         ...prevChatHistory,
         { user: 'user', message: inputValue },
@@ -37,6 +37,7 @@ const ChatComponent = () => {
       ]);
       
       setInputValue('');
+      setResponse(generatedText); // Set the response text
     } catch (error) {
       console.log(error);
     }
@@ -48,29 +49,29 @@ const ChatComponent = () => {
   
   return (
     <>
-    {response &&(
-      <div className='ml-0 fixed top-20 left-0'>
-        <button className="  py-2 px-4 border border-none w-[200px] h-[50px] bg-clip-text w-40" onClick={handleSaveChat}>
+    <div className='ml-0 fixed top-20 left-0'>
+      {response && (
+        <button className="py-2 px-4 border border-none w-[200px] h-[50px] bg-clip-text w-40" onClick={handleSaveChat}>
           <span className="bg-gradient-to-r from-blue-500 to-purple-500 text-transparent bg-clip-text sm:mb-4">Save Chat</span>
         </button>
-      </div>
-    )}
+      )}
+    </div>
     
     <div className="chat-container mt-2 w-[800px] h-[500px] border border-solid mt-2 max-w-screen-lg mx-auto px-4">
-     {!response &&(
-      <h2 className="text-center text-4xl font-semibold mb-10  top-20 left-0 right-0 font-sans">How can I help you Today?</h2>
-     )} 
-      <div className="flex items-center justify-center mt-0 w-[800px] ">
-
-        <div className="response-container mt-4">
-          {chatHistory.map((chatItem, index) => (
-            <div key={index} className=" p-4 rounded-md text-left font-sans" >
-              <p className={`text-gray-800 mb-2 ${chatItem.user === 'user' ? 'font-bold' : ''}`}>{chatItem.user}: {chatItem.message}</p>
-            </div>
-          ))}
+      {response || chatHistory.length > 0 ? (
+        <div className="flex items-center justify-center mt-0 w-[800px] ">
+          <div className="response-container mt-4">
+            {chatHistory.map((chatItem, index) => (
+              <div key={index} className="p-4 rounded-md text-left font-sans">
+                <p className={`text-gray-800 mb-2 ${chatItem.user === 'user' ? 'font-bold' : ''}`}>{chatItem.user}: {chatItem.message}</p>
+              </div>
+            ))}
+          </div>
+          <br />
         </div>
-        <br />
-      </div>
+      ) : (
+        <h2 className="text-center text-4xl font-semibold mb-10 top-20 left-0 right-0 font-sans">How can I help you Today?</h2>
+      )}
 
       <div className="flex items-center justify-center mt-4">
         <input
@@ -78,7 +79,7 @@ const ChatComponent = () => {
           value={inputValue}
           onChange={handleInputChange}
           placeholder="Type your message..."
-          className="py-2 px-4 rounded-l-md outline-none border border-gray-300 shadow-inset  transition-all duration-300 ease-in-out mr-2 w-[700px] sm:w-96"
+          className="py-2 px-4 rounded-l-md outline-none border border-gray-300 shadow-inset transition-all duration-300 ease-in-out mr-2 w-[700px] sm:w-96"
         />
         <button
           onClick={handleSubmit}
