@@ -52,7 +52,7 @@ const ChatComponent = () => {
     {response &&(
       <div className='ml-0 fixed top-20 left-0'>
       <button className="  py-2 px-4 border border-none w-[200px] h-[50px] bg-clip-text w-40" onClick={handleSaveChat}>
-      <span className="bg-gradient-to-r from-blue-500 to-purple-500 text-transparent bg-clip-text">Save Chat</span>
+      <span className="bg-gradient-to-r from-blue-500 to-purple-500 text-transparent bg-clip-text sm:mb-4">Save Chat</span>
       </button>
     </div>
     )}
