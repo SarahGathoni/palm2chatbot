@@ -57,7 +57,7 @@ const ChatComponent = () => {
       )}
     </div>
     
-    <div className="chat-container text-white mt-2 w-[800px] h-[500px] border border-solid mt-2 max-w-screen-lg mx-auto px-4">
+    <div className="chat-container mt-2 w-[800px] h-[500px] border border-solid mt-2 max-w-screen-lg mx-auto px-4">
       {response || chatHistory.length > 0 ? (
         <div className="flex items-center justify-center mt-0 w-[800px] ">
           <div className="response-container mt-4">
