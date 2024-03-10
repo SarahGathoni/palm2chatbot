@@ -26,35 +26,34 @@ const ChatComponent = () => {
       if (!response.ok) {
         throw Error(response.statusText);
       }
-      const responseData = await response.json(); // Parse the response as JSON
-      const generatedText = responseData.candidates[0].content.parts[0].text; // Extract the generated text
-      setResponse(generatedText);
-  
-      if (response.ok) {
-        setChatHistory([
-          ...chatHistory,
-          { user: 'user', message: inputValue },
-          { user: 'bot', message: generatedText }, // Use the generated text here
-        ]);
-        setInputValue('');
-      }
+      const responseData = await response.json();
+      const generatedText = responseData.candidates[0].content.parts[0].text;
+      
+      // Append the new message to the chat history
+      setChatHistory(prevChatHistory => [
+        ...prevChatHistory,
+        { user: 'user', message: inputValue },
+        { user: 'bot', message: generatedText },
+      ]);
+      
+      setInputValue('');
     } catch (error) {
       console.log(error);
     }
   };
   
   const handleSaveChat = () => {
-    // You can save the current chat history here
     console.log('Saving chat:', chatHistory);
   };
+  
   return (
     <>
     {response &&(
       <div className='ml-0 fixed top-20 left-0'>
-      <button className="  py-2 px-4 border border-none w-[200px] h-[50px] bg-clip-text w-40" onClick={handleSaveChat}>
-      <span className="bg-gradient-to-r from-blue-500 to-purple-500 text-transparent bg-clip-text sm:mb-4">Save Chat</span>
-      </button>
-    </div>
+        <button className="  py-2 px-4 border border-none w-[200px] h-[50px] bg-clip-text w-40" onClick={handleSaveChat}>
+          <span className="bg-gradient-to-r from-blue-500 to-purple-500 text-transparent bg-clip-text sm:mb-4">Save Chat</span>
+        </button>
+      </div>
     )}
     
     <div className="chat-container mt-2 w-[800px] h-[500px] border border-solid mt-2 max-w-screen-lg mx-auto px-4">
@@ -64,18 +63,15 @@ const ChatComponent = () => {
       <div className="flex items-center justify-center mt-0 w-[800px] ">
 
         <div className="response-container mt-4">
-          {response && (
-            <div className=" p-4 rounded-md text-left font-sans" >
-              <p className="text-gray-800 mb-2"><span className="font-bold">You:</span> {chatHistory[chatHistory.length - 2].message}</p>
-              <p className="text-gray-800"><span className="font-bold">Bot:</span> {chatHistory[chatHistory.length - 1].message}</p>
+          {chatHistory.map((chatItem, index) => (
+            <div key={index} className=" p-4 rounded-md text-left font-sans" >
+              <p className={`text-gray-800 mb-2 ${chatItem.user === 'user' ? 'font-bold' : ''}`}>{chatItem.user}: {chatItem.message}</p>
             </div>
-          )}
+          ))}
         </div>
-        <br>
-        </br>
+        <br />
       </div>
 
-      
       <div className="flex items-center justify-center mt-4">
         <input
           type="text"
@@ -96,4 +92,4 @@ const ChatComponent = () => {
   );
 };
 
-export default ChatComponent
+export default ChatComponent;
