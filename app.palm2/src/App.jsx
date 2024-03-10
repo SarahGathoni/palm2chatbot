@@ -22,7 +22,7 @@ const ChatComponent = () => {
           message: inputValue,
         }),
       };
-      const response = await fetch('http://localhost:3000/chat', options);
+      const response = await fetch('https://gemini-nodejs-api.onrender.com/chat', options);
       if (!response.ok) {
         throw Error(response.statusText);
       }
